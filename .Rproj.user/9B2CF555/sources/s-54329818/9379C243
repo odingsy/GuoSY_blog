@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1524376780622.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "9379C243",
+    "lastKnownWriteTime" : 1524377436,
+    "last_content_update" : 1524377436648,
+    "path" : "~/Dropbox/GuoSY_blog/config.toml",
+    "project_path" : "config.toml",
+    "properties" : {
+        "cursorPosition" : "6,73",
+        "scrollLine" : "1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "toml"
+}
