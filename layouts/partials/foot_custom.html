@@ -1,0 +1,18 @@
+{{ template "_internal/google_analytics.html" . }}
+
+
+<!-- {{ if .IsPage }} -->
+<!--   {{ template "_internal/disqus.html" . }} -->
+<!-- {{ end }} -->
+
+
+<!-- not sure why dont use the default chroma -->
+<!-- the answer is here -->
+<!-- https://github.com/rstudio/blogdown/issues/125 -->
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/r.min.js"></script>
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+

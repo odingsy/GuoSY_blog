@@ -180,16 +180,16 @@ code {
 
 .archive-item-date {
   color: #ccc;
-  font-size: 14px;
+  font-size: 10px;
   padding: 5px 0;
-  margin-top: 5px;
-  display: block;
+  /* margin-top: 5px; */
+  /* display: block; */
 }
 
 .archive-item-link {
-  display: inline-block;
+  /* display: inline-block; */
   text-decoration: none;
-  font-size: 21px;
+  font-size: 14px;
   font-weight: bold;
   color: #222;
   padding: 5px 0;

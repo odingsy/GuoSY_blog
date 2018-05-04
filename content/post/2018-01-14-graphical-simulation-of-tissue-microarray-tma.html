@@ -1,0 +1,99 @@
+---
+title: "Graphical Simulation of Tissue Microarray reference images"
+author: 'Guo Shiyuan'
+date: '2018-01-14'
+slug: graphical-simulation-of-tissue-microarray-tma
+tags:
+- research
+- visualisation
+categories: R
+---
+
+
+
+<div id="a-motive-in-developing-a-color-scheme" class="section level1">
+<h1>A motive in developing a color scheme</h1>
+<p>Tissue microarray is a set of slides containing “many small representative tissue samples from human/animal assembled on a single histology slide” <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. It is a high-throughput histology method <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> to effectively associate a protein expression to a disease.</p>
+<p>To quantify protein expression, <a href="https://en.wikipedia.org/wiki/Immunohistochemistry">Immunohistochemstry(IHC)</a> is one of the common methods to label the protein. A IHC-stained TMA usually have tissue spots stained in a gradient of brown <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>; the intensity of brown color correlates with expression of labelled protein.</p>
+<p><img src="/tma.jpg" /></p>
+<p>Although there are various algorithms and software that automate quantification, manual scoring is still commonly used. The first step of scoring involve identification the total percentage of brown area within the area/compartment of interest (e.g. cytoplasm of the tumor cell). Accurately translating a visual image to staining percentage requires practice and a series of reference images with 5% increment of brown area is produced to facilitate manual scoring.</p>
+</div>
+<div id="simulting-a-tma-slide-with-a-gradient-of-brown-staining." class="section level1">
+<h1>Simulting a TMA slide with a gradient of brown staining.</h1>
+<p>Each stained spot is a round color patch containing brown, blue and empty space (white).
+- to make it round, <a href="https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/5838055#5838055">points within the circle is generated</a>.
+- to make choice the suitable colors, hex code from Digital Color Meter (a Mac program) is used with setting “Display in sRGB” on the previous image.
+- background is given a constant 30%. The rest 70% stained area is further divided into respective brown as indicated.</p>
+<pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;gridExtra&quot;)
+lapply(x, require, character.only = TRUE, quietly = T,  warn.conflicts = F)</code></pre>
+<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
+## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre><code>## [[1]]
+## [1] TRUE
+## 
+## [[2]]
+## [1] TRUE</code></pre>
+<pre class="r"><code>perc_plot &lt;- function(B = 10000, freq, nonstain_freq = .3, bg = &quot;#FFFFFF&quot;, DAP = &quot;#AA6845&quot;, hematoxylin = &quot;#38A5D3&quot;){
+    t &lt;- 2*pi*runif(n = B)
+    u &lt;- runif(n = B) + runif(n = B)
+
+    r &lt;- sapply(u, function(i) {
+        if (i&gt;1) {
+            2-i 
+        } else {
+            i
+        }})
+    
+    r &lt;- tbl_df(matrix(r, ncol = 1))
+    
+## use ~rep.int~ instread of ~rep~, since the danger of having argument time as an operation. see help(&quot;rep&quot;)
+    samp_rdm &lt;- sample(c(rep.int(0, B*nonstain_freq), rep.int(1, B*(1-nonstain_freq)*freq+1), rep.int(2, B*(1-nonstain_freq)*(1-freq)+1)), size = B) 
+    
+    
+    r %&gt;%
+        mutate(., x =  .[[1]]*cos(t), y =  .[[1]]*sin(t), stained = factor(samp_rdm)) %&gt;%
+        ggplot(aes(x = x, y = y, color = stained)) + geom_point()+coord_fixed()+
+        scale_color_manual(values = c(bg, DAP, hematoxylin)) +
+        labs(subtitle= paste0(freq*100, &quot;% DAP staining&quot;))+
+        theme(axis.line=element_blank(),
+              plot.subtitle = element_text(size=35),
+              axis.text.x=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks=element_blank(),
+              axis.title.x=element_blank(),
+              axis.title.y=element_blank(),
+              legend.position=&quot;none&quot;,
+              panel.background=element_blank(),
+              panel.border=element_blank(),
+              panel.grid.major=element_blank(),
+              panel.grid.minor=element_blank(),
+              plot.background=element_blank())
+}
+
+tp &lt;- lapply(seq(from = 0.05, to = 1, by = 0.05), function(n) perc_plot(freq = n))
+
+do.call(grid.arrange,tp)</code></pre>
+<p><img src="/post/2018-01-14-graphical-simulation-of-tissue-microarray-tma_files/figure-html/unnamed-chunk-1-1.png" width="70%" /></p>
+</div>
+<div id="a-reflection" class="section level1">
+<h1>A reflection</h1>
+<p>This series of reference images is of couse an over-simplification.
+- it does not account the shade/intensity of brown color, instead only a single brown color was implemented.
+- it only give a fix percentage of background.
+- no cellular compartments are shown.
+However, through this concise <code>ggplot</code> code chunk, we could get a touch on a complex research using visual simulation with aesthetic beauty.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2813639/">Tissue Microarray: A rapidly evolving diagnostic and research tool</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>in contrary to one tissue per slide.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>The use of Diammonium phosphate (DAP) that is able to conjugate with the antibodies. The non-brownish area appear to be blue due to the use of Hematoxylin counter stain that targets to nuclei.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

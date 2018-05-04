@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>the_places_I_have_been</name>
+    <Style id="icon-1899-0288D1-nodesc-normal">
+      <IconStyle>
+        <color>ffd18802</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-0288D1-nodesc-highlight">
+      <IconStyle>
+        <color>ffd18802</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-0288D1-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-0288D1-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-0288D1-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>2018 Feb</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          103.8716125,13.457744,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2018 Feb</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          103.2014465,13.0975361,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2017 Dec</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          55.2722168,25.2086687,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2017 Dec</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          56.3241577,25.3787723,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Jan-Jun</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          18.0622101,59.3307378,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Apr</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          12.5666428,55.6756485,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          2.3400879,48.8719415,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Apr</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          13.4033203,52.5212348,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Apr</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          8.6407471,49.8804776,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Apr</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          6.9543457,50.9411232,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          4.2626953,52.079506,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          4.3790817,52.0051211,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2017 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -79.0378761,43.0965959,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2013 Dec</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          115.1422119,-8.6652028,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2017 Jul</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          115.1202393,-8.7982255,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Jul</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          104.1606903,2.8223442,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2014 match</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          103.8606262,1.5571203,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2007 Nov to now</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          103.866806,1.3566847,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2013 Jun</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          98.97995,18.7034886,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2017 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -73.9448547,40.8231628,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2017 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -72.52985,42.3541041,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Point 22</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          114.1534424,22.3449952,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2012 Jan</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          113.5272217,22.1670579,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>I was born here!</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          107.2363472,34.3551993,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2001 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          116.5703809,40.4318733,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>1997 Sep</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          113.8432556,22.6479971,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2003 Jul</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          121.4840698,31.2315917,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Mar</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          12.3156738,45.4408627,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Mar</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          12.495575,41.9032992,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Mar</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          6.6247559,46.5191857,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Mar</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          6.8719482,45.9234533,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Jun</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          14.4360352,50.0774132,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Jun</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          11.5795898,48.1440979,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Jun</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          2.175293,41.3871126,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Feb</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          8.129797,59.3168948,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Mar</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          6.1904204,58.9864013,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Mar</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          6.5447187,60.0693749,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2015 Feb</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          24.9362183,60.1681585,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2012 Apr</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          110.0846386,34.4778,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2012 May</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          106.9876099,33.0639242,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>2011 Dec</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          112.5432587,37.8585914,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
