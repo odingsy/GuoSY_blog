@@ -1,6 +1,6 @@
 ---
 title: "Graphical Simulation of Tissue Microarray reference images"
-author: 'Guo Shiyuan'
+author: ''
 date: '2018-01-14'
 slug: graphical-simulation-of-tissue-microarray-tma
 tags:
@@ -20,60 +20,50 @@ categories: R
 </div>
 <div id="simulting-a-tma-slide-with-a-gradient-of-brown-staining." class="section level1">
 <h1>Simulting a TMA slide with a gradient of brown staining.</h1>
-<p>Each stained spot is a round color patch containing brown, blue and empty space (white).
-- to make it round, <a href="https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/5838055#5838055">points within the circle is generated</a>.
-- to make choice the suitable colors, hex code from Digital Color Meter (a Mac program) is used with setting “Display in sRGB” on the previous image.
-- background is given a constant 30%. The rest 70% stained area is further divided into respective brown as indicated.</p>
+<p>Each stained spot is a round color patch containing brown, blue and empty space (white).</p>
+<ul>
+<li>to make it round, <a href="https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/5838055#5838055">points within the circle is generated</a>.</li>
+<li>to make choice the suitable colors, hex code from Digital Color Meter (a Mac program) is used with setting “Display in sRGB” on the previous image.</li>
+<li>background is given a constant 30%. The rest 70% stained area is further divided into respective brown as indicated.</li>
+</ul>
 <pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;gridExtra&quot;)
-lapply(x, require, character.only = TRUE, quietly = T,  warn.conflicts = F)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
-## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
-## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
-## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre><code>## [[1]]
-## [1] TRUE
-## 
-## [[2]]
-## [1] TRUE</code></pre>
-<pre class="r"><code>perc_plot &lt;- function(B = 10000, freq, nonstain_freq = .3, bg = &quot;#FFFFFF&quot;, DAP = &quot;#AA6845&quot;, hematoxylin = &quot;#38A5D3&quot;){
-    t &lt;- 2*pi*runif(n = B)
-    u &lt;- runif(n = B) + runif(n = B)
+x &lt;- sapply(x, require, character.only = TRUE)
 
-    r &lt;- sapply(u, function(i) {
-        if (i&gt;1) {
-            2-i 
-        } else {
-            i
-        }})
-    
-    r &lt;- tbl_df(matrix(r, ncol = 1))
-    
-## use ~rep.int~ instread of ~rep~, since the danger of having argument time as an operation. see help(&quot;rep&quot;)
-    samp_rdm &lt;- sample(c(rep.int(0, B*nonstain_freq), rep.int(1, B*(1-nonstain_freq)*freq+1), rep.int(2, B*(1-nonstain_freq)*(1-freq)+1)), size = B) 
-    
-    
-    r %&gt;%
-        mutate(., x =  .[[1]]*cos(t), y =  .[[1]]*sin(t), stained = factor(samp_rdm)) %&gt;%
-        ggplot(aes(x = x, y = y, color = stained)) + geom_point()+coord_fixed()+
-        scale_color_manual(values = c(bg, DAP, hematoxylin)) +
-        labs(subtitle= paste0(freq*100, &quot;% DAP staining&quot;))+
-        theme(axis.line=element_blank(),
-              plot.subtitle = element_text(size=35),
-              axis.text.x=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks=element_blank(),
-              axis.title.x=element_blank(),
-              axis.title.y=element_blank(),
-              legend.position=&quot;none&quot;,
-              panel.background=element_blank(),
-              panel.border=element_blank(),
-              panel.grid.major=element_blank(),
-              panel.grid.minor=element_blank(),
-              plot.background=element_blank())
+perc_plot &lt;- function(B = 10000, freq, nonstain_freq = .3, bg = &quot;#FFFFFF&quot;, DAP = &quot;#AA6845&quot;, hematoxylin = &quot;#38A5D3&quot;){
+  t &lt;- 2*pi*runif(n = B)
+  u &lt;- runif(n = B) + runif(n = B)
+  
+  r &lt;- sapply(u, function(i) {
+    if (i&gt;1) {
+      2-i 
+    } else {
+      i
+    }})
+  
+  r &lt;- tbl_df(matrix(r, ncol = 1))
+  
+  ## use ~rep.int~ instread of ~rep~, since the danger of having argument time as an operation. see help(&quot;rep&quot;)
+  samp_rdm &lt;- sample(c(rep.int(0, B*nonstain_freq), rep.int(1, B*(1-nonstain_freq)*freq+1), rep.int(2, B*(1-nonstain_freq)*(1-freq)+1)), size = B) 
+  
+  
+  r %&gt;%
+    mutate(., x =  .[[1]]*cos(t), y =  .[[1]]*sin(t), stained = factor(samp_rdm)) %&gt;%
+    ggplot(aes(x = x, y = y, color = stained)) + geom_point()+coord_fixed()+
+    scale_color_manual(values = c(bg, DAP, hematoxylin)) +
+    labs(subtitle= paste0(freq*100, &quot;% DAP staining&quot;))+
+    theme(axis.line=element_blank(),
+          plot.subtitle = element_text(size=35),
+          axis.text.x=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          legend.position=&quot;none&quot;,
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank())
 }
 
 tp &lt;- lapply(seq(from = 0.05, to = 1, by = 0.05), function(n) perc_plot(freq = n))
@@ -83,11 +73,13 @@ do.call(grid.arrange,tp)</code></pre>
 </div>
 <div id="a-reflection" class="section level1">
 <h1>A reflection</h1>
-<p>This series of reference images is of couse an over-simplification.
-- it does not account the shade/intensity of brown color, instead only a single brown color was implemented.
-- it only give a fix percentage of background.
-- no cellular compartments are shown.
-However, through this concise <code>ggplot</code> code chunk, we could get a touch on a complex research using visual simulation with aesthetic beauty.</p>
+<p>This series of reference images is of couse an over-simplification.</p>
+<ul>
+<li>it does not account the shade/intensity of brown color, instead only a single brown color was implemented.</li>
+<li>it only give a fix percentage of background.</li>
+<li>no cellular compartments are shown.</li>
+</ul>
+<p>However, through this concise <code>ggplot</code> code chunk, we could get a touch on a complex research using visual simulation with aesthetic beauty.</p>
 </div>
 <div class="footnotes">
 <hr />

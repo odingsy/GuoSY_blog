@@ -26,7 +26,8 @@ a {
 }
 
 code {
-  background-color: rgba(0, 0, 0, 0.02);
+    background-color: rgba(0, 0, 0, 0.02);
+    /* font-size: 10px; */
 }
 
 .wrapper {
@@ -158,6 +159,11 @@ code {
 .highlight pre {
   padding: 10px;
 }
+
+pre {
+    font-size: 10px;
+}
+
 
 .archive {
   margin: 0;

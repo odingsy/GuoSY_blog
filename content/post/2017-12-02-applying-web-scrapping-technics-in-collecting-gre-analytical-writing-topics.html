@@ -1,6 +1,6 @@
 ---
 title: "Applying web scrapping technics in collecting GRE analytical writing topics"
-author: "Guo Shiyuan"
+author: ""
 date: '2017-12-02'
 output:
   pdf_document:
@@ -10,6 +10,7 @@ tags: collect_info
 categories: R
 ---
 
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
 <div id="introduction-to-web-scrapping-in-r" class="section level1">
@@ -18,9 +19,9 @@ categories: R
 <p>In R platform, <code>rvest</code> is the package that includes functions to read html source code by providing page urls; with the help from a css selector as a chrome plugin <a href="http://selectorgadget.com/">SelectorGadget</a>, which identifies tags of interest, web scrapping can be realised without html/css knowledge.</p>
 <p>The main source I learnt this technique are as follows.</p>
 <ul>
-<li><a href="https://www.analyticsvidhya.com/blog/2017/03/beginners-guide-on-web-scraping-in-r-using-rvest-with-hands-on-knowledge/">scrapping intro by analyticsvidhya</a></li>
+<li><a href="https://www.analyticsvidhya.com/blog/2017/03/beginners-guide-on-web-scraping-in-r-using-rvest-with-hands-on-knowledge/">scrapping introduction by analyticsvidhya</a></li>
 <li><a href="https://stat4701.github.io/edav/2015/04/02/rvest_tutorial/">rvest tutorial: scraping the web using R</a></li>
-<li>vignette(“selectorgadget”) under <code>rvest</code></li>
+<li>vignette(“selectorgadget”) under <code>rvest</code>.</li>
 </ul>
 </div>
 <div id="understand-the-data" class="section level1">
@@ -38,23 +39,10 @@ categories: R
 <li>from html web address, extract the individual entities by using html tags <code>.divider-50~ p , .indented p</code> (assisted by SelectorGadget).</li>
 </ol>
 <pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;readr&quot;, &quot;rvest&quot;, &quot;openxlsx&quot;, &quot;kableExtra&quot;)
-lapply(x, require, character.only = TRUE, quietly = T,  warn.conflicts = F)</code></pre>
-<pre><code>## [[1]]
-## [1] TRUE
-## 
-## [[2]]
-## [1] TRUE
-## 
-## [[3]]
-## [1] TRUE
-## 
-## [[4]]
-## [1] TRUE
-## 
-## [[5]]
-## [1] TRUE</code></pre>
-<pre class="r"><code>scraping &lt;- function(url, css){
-    html_text(html_nodes(read_html(url), css))
+x &lt;- sapply(x, require, character.only = TRUE)
+
+scraping &lt;- function(url, css){
+  html_text(html_nodes(read_html(url), css))
 }
 
 url_issue &lt;- &quot;https://www.ets.org/gre/revised_general/prepare/analytical_writing/issue/pool&quot;
@@ -74,7 +62,7 @@ issue[start_claim] &lt;- paste(issue[start_claim], &quot;\n&quot;,issue[start_cl
 issue &lt;- issue[-(start_claim + 1)]
 ## now odd is prompt and even is question 
 issue_tbl &lt;- tbl_df(matrix(issue, ncol = 2, byrow = T)) %&gt;%
-    mutate(., qn_no = as.numeric(factor(V2))) # number the question 
+  mutate(., qn_no = as.numeric(factor(V2))) # number the question 
 colnames(issue_tbl) &lt;- c(&quot;background_info&quot;, &quot;question&quot;, &quot;qn_no&quot;)
 
 ######################################################################
@@ -85,20 +73,20 @@ interval &lt;- findInterval(1:493, start_response, rightmost.closed = T, left.op
 interval[2] &lt;- c(0) ## a minor adjust of the first interval. 
 ## split the prompts out, aggregate paste neighbour with sample interval number. 
 interval_tbl &lt;- tbl_df(cbind(argument, interval)) %&gt;%
-    group_by(., interval) %&gt;%
-    filter(., row_number() != n()) %&gt;%
-    ungroup()
+  group_by(., interval) %&gt;%
+  filter(., row_number() != n()) %&gt;%
+  ungroup()
 bg_tbl &lt;- aggregate(argument~interval, interval_tbl, paste, collapse = &quot;\n&quot;) %&gt;%
-    tbl_df
+  tbl_df
 ## split the questions out. 
 qn_tbl &lt;- tbl_df(cbind(argument, interval)) %&gt;%
-    group_by(., interval) %&gt;%
-    filter(., row_number() == n()) %&gt;%
-    ungroup()
+  group_by(., interval) %&gt;%
+  filter(., row_number() == n()) %&gt;%
+  ungroup()
 ## joining prompts and questions. 
 argument_tbl &lt;- inner_join(bg_tbl, qn_tbl, by = c(&quot;interval&quot; = &quot;interval&quot;)) %&gt;%
-    select(., -interval) %&gt;%
-    mutate(., qn_no = as.numeric(factor(argument.y)))
+  select(., -interval) %&gt;%
+  mutate(., qn_no = as.numeric(factor(argument.y)))
 colnames(argument_tbl) &lt;- c(&quot;background_info&quot;, &quot;question&quot;, &quot;qn_no&quot;)
 
 ######################################################################
@@ -296,5 +284,5 @@ Write a response in which you discuss the extent to which you agree or disagree 
 </div>
 <div id="output-and-reflection" class="section level1">
 <h1><a href="/GRE_AW.xlsx">Output</a> and reflection</h1>
-<p>Capturing a data set was trivial while organising it requires a fair understand about its structure. The idea of organising issue and argument were conceived in a chronological order, so that the way to organise argument was more generalisable because it use a shared feature in the question instead of the feature only appear in each type. Although no bench marking on code efficiency was not performed thus there is no guarantee on the efficiency of the code, this post proposed a context for web scrapping to solve problem and presented some challenges with data organisation.</p>
+<p>Capturing a data set was trivial while organising it requires a fair understand about its structure. The idea of organising GRE analytical issue and argument were conceived in a chronological order, so that the way to organise argument was more generalisable because it use a shared feature in the question instead of the feature only appear in each type. Although no bench marking on code efficiency was performed thus there was no guarantee on the efficiency of the code, this post persented a real life example which required a workflow involving web scrapping and data tidyup.</p>
 </div>
