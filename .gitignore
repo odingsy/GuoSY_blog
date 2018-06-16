@@ -4,3 +4,9 @@ public/
 .Rproj.user
 TODO.org
 3.5
+static/resume/*.org
+static/resume/*.bbl
+static/resume/*.sty
+static/resume/*.tex
+static/resume/_minted-personal-info
+static/resume/_minted-resume

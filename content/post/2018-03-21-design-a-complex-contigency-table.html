@@ -1,5 +1,5 @@
 ---
-title: Automatically generating a characteristic/demograpghic table
+title: Automatically generating a characteristic/demographic table
 author: ''
 date: '2018-03-21'
 slug: design-a-complex-contigency-table
@@ -123,6 +123,7 @@ colnames(df) &lt;- c(&quot;Sex&quot;, &quot;Age, years&quot;, &quot;Tumor size, 
 <li><code>do.call(rbind)</code> all the contigency table together.</li>
 </ol>
 <pre class="r"><code>## about using one decimal place through presenting (https://stackoverflow.com/a/12135122)
+## wrt data presentation, package &quot;[formattable](https://github.com/renkun-ken/formattable)&quot; should be explored 
 specify_decimal &lt;- function(x, k = 1) {
   if (is.nan(x)) {
     trimws(format(round(0, k), nsmall=k))

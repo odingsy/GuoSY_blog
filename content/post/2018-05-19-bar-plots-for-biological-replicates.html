@@ -1,0 +1,547 @@
+---
+title: Visualising ANOVA and post-hoc test 
+author: ''
+date: '2018-05-19'
+slug: bar-plots-for-biological-replicates
+categories:
+  - R
+tags:
+  - research
+  - visualisation
+---
+
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<div id="barplot-in-biomedical-science" class="section level1">
+<h1>Barplot in biomedical science</h1>
+<p>Analysis of Variance (ANOVA) applies linear regression on a categorical explanatory variable (one-way ANOVA) or variables. It is widely used in biomedical research in the context of hypothesis testing. It potential answers a question that can be phrased in two different ways,</p>
+<ol style="list-style-type: decimal">
+<li>whether the mean responses from one subgroup (e.g. treatment) significantly differs from the other (e.g. placebo). This statement emphasizes the fact that ANOVA compares the (standardized/normalized) group mean.</li>
+<li>how significant can we improve our ability to explain the reality by adding a label (e.g. treatment and placebo). This statement emphasizes that ANOVA is a kind of linear regression which aims to minimize sum of the squres.</li>
+</ol>
+<p>Post-hoc tests, as the names suggested, occur after ANOVA returning significance. In the event which a categorical explanatory variable has more that two levels, ANOVA only tells there is a difference in group mean but does not tell which subgroup differs from others. Post-hoc tests, consisting a class of pairwise comparison tests, addresses the follow-up question that was left by ANOVA.</p>
+<p>Barplot is arguably preferable in biomedical journals <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> despite of the advice <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> and the disadvantage of using barplot <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. The purpose of this blog will</p>
+<ul>
+<li><del>summaise the for and against of using barplot comparing to boxplot in visualising a continuous response variable against a categorical explanatory variable or variables.</del></li>
+<li><del>give a prescriptive solution to visualise ANOVA and post-hoc test results in biomedical sciences.</del></li>
+<li>go through a code snippet that automates barplot to visualise ANOVA and post-hoc tests.</li>
+</ul>
+</div>
+<div id="the-dataset" class="section level1">
+<h1>The dataset</h1>
+<p>The data chosen <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> has the following characteristics</p>
+<ul>
+<li>a continuous response and two categorical explanatory variables</li>
+<li>replicate involved, albeit 4 replicates at each combination. More precisely, it is a technical replicate as a same individual was performed 4 measurement. Replicates enable statistical test, like ANOVA and post-hoc test, which its result is integrated into barplot as P-value, error bar and significant bar between groups.</li>
+</ul>
+<p>The question that this dataset potential addresses is <em>whether this individual’s monthly activity and sleep quality have significantly differed throughout the follow-up period</em> OR they are not significantly differ and differences observed are purely due to technical variabilty.</p>
+To summarise the variables
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+type of variable
+</th>
+<th style="text-align:left;">
+name and meaning of variable
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+continuous response
+</td>
+<td style="text-align:left;">
+y = % performance (ranging from 0 to 100)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+categorical explainatory
+</td>
+<td style="text-align:left;">
+x = time (6 categories, every 4 months within two years
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+categorical explainatory
+</td>
+<td style="text-align:left;">
+f = type of reading (3 exercises + 1 sleeping pattern)
+</td>
+</tr>
+</tbody>
+</table>
+<p>The dataset looks like the following after cleaning up.</p>
+<pre class="r"><code>perform &lt;- read_csv(&quot;/Users/Guoshiyuan/Dropbox/GuoSY_blog/static/bar_plot/Scatter_plot.csv&quot;) 
+colnames(perform) &lt;- c(colnames(perform)[1], 
+                     paste0(colnames(perform)[2], &quot;_&quot;, 1:4),
+                     paste0(colnames(perform)[6], &quot;_&quot;, 1:4), 
+                     paste0(colnames(perform)[10], &quot;_&quot;, 1:4),
+                     paste0(colnames(perform)[14],&quot;_&quot;, 1:4))
+
+perform &lt;- gather(perform, activity, `% performance`, -`Time (units)`) %&gt;%
+  separate(activity, c(&quot;activity&quot;, &quot;replicate&quot;), &quot;_&quot;) %&gt;%
+  mutate_at(.vars = vars(`% performance`), 
+            .funs = funs(as.numeric(gsub(&quot;%&quot;, &quot;&quot;, .)))) %&gt;% 
+  mutate_at(.vars = vars(activity), 
+            .funs = funs(factor(.))) %&gt;% 
+  mutate_at(.vars = vars(replicate), 
+            .funs = funs(as.numeric(.)))
+
+
+head(perform) %&gt;% 
+  kable(format = &quot;html&quot;) %&gt;% 
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;), font_size = 10)</code></pre>
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Time (units)
+</th>
+<th style="text-align:left;">
+activity
+</th>
+<th style="text-align:right;">
+replicate
+</th>
+<th style="text-align:right;">
+% performance
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Jan–Apr 2015
+</td>
+<td style="text-align:left;">
+Flights of stairs climbed
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+71.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May–Aug 2015
+</td>
+<td style="text-align:left;">
+Flights of stairs climbed
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+100.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sep–Dec 2015
+</td>
+<td style="text-align:left;">
+Flights of stairs climbed
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+56.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jan–Apr 2016
+</td>
+<td style="text-align:left;">
+Flights of stairs climbed
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+75.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May–Aug 2016
+</td>
+<td style="text-align:left;">
+Flights of stairs climbed
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+88.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sep–Dec 2016
+</td>
+<td style="text-align:left;">
+Flights of stairs climbed
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+47.9
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="repli_plot-walkthrough" class="section level1">
+<h1><code>repli_plot</code> walkthrough</h1>
+<p>The function <code>repli_plot</code> is created. The names indicated that the input is table with each data point representing a replicate instead of the average of replicates. In total, the total data point will be</p>
+<p><span class="math display">\[total\ data\ point = x \times f \times replicate = 6 \times 4 \times 4 = 96\]</span></p>
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+arguement names
+</th>
+<th style="text-align:left;">
+meaning
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+df
+</td>
+<td style="text-align:left;">
+the dataframe with every datapoint
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+xColname, xValue
+</td>
+<td style="text-align:left;">
+the column name of explanatory variable and levels, which determins the order of levels
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ctrl_index
+</td>
+<td style="text-align:left;">
+the index of levels which is regarded as control to obtain effect size. default as first levels
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+yColname
+</td>
+<td style="text-align:left;">
+the column name of response variable
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f_pt
+</td>
+<td style="text-align:left;">
+how to deal with another factor? FALSE = no the other factor; TRUE = have the other factor by create a seperate graph; dodge = using geom_bar(position = dodge) (developing, due to hard to automate significant bar.)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fColname, and fValue
+</td>
+<td style="text-align:left;">
+the other factors
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+title_txt, y_lab, x_lab
+</td>
+<td style="text-align:left;">
+labels
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+withDots
+</td>
+<td style="text-align:left;">
+with each individual replicate should be shown as points?
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+errorbar
+</td>
+<td style="text-align:left;">
+what is the error bar represent? least significant difference (LSD) bars will be inplemented.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+showeffect
+</td>
+<td style="text-align:left;">
+whether effect size should be shown, given ANOVA significance.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+div
+</td>
+<td style="text-align:left;">
+a common text divider
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+y_max
+</td>
+<td style="text-align:left;">
+y_max should ~20% higher that maximun y to make space for significant bar
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>repli_plot &lt;- function(df, 
+                       xColname, xValue, ctrl_index = 1, # x grouping
+                       yColname, # y/resposne
+                       f_pt = c(FALSE, TRUE, &quot;dodge&quot;), # timepoint options
+                       fColname, fValue, # the other factor value 
+                       title_txt, y_lab, x_lab, #labs
+                       withDots = TRUE, errorbar = c(&quot;SEM&quot;, &quot;SD&quot;, &quot;95%CI&quot;), showeffect = TRUE, # utils
+                       div = 1, y_max = 120){
+  
+  ## assigning internal variable y, x and time. 
+  df$y &lt;- df[[which(colnames(df) == yColname)]]
+  df$x &lt;- factor(df[[which(colnames(df) == xColname)]], levels = xValue)
+  if(f_pt ==  &quot;TRUE&quot; || f_pt == &quot;dodge&quot;) {
+    df$f  &lt;- factor(df[which(colnames(df) == fColname)], levels = fValue)
+  }
+  if (ctrl_index %in% seq_along(xValue) == FALSE){stop(&quot;ctrl index out of bound!&quot;)}
+  
+  ##anova test and tukey comparing significance 
+  ano &lt;- summary(aov(y~x, data = df))[[1]][[&quot;Pr(&gt;F)&quot;]][1]
+  post_hoc_pairs &lt;- unlist(sapply(xValue[1:(length(xValue)-1)], function(first){
+    lapply(xValue[(which(xValue == first)+1):length(xValue)], function(second){
+      c(first,second)
+    })
+  }), recursive = FALSE)
+  sign &lt;- TukeyHSD(aov(y~x, df))$x[,4] # post-hoc tukey was used here. 
+  ## compares only the significant groups
+  sign &lt;- sign[which(sign &lt; 0.05)]
+  post_hoc_pairs &lt;- post_hoc_pairs[which(sign &lt; 0.05)]
+  sign_ano &lt;- ifelse(unname(sign)&lt;0.0001,&quot;****&quot;, 
+                     ifelse(unname(sign)&lt;0.001, &quot;***&quot;, 
+                            ifelse(unname(sign)&lt;0.01, &quot;**&quot;, 
+                                   ifelse(unname(sign)&lt;0.05, &quot;*&quot;, &quot;ns&quot;))))
+  
+  ## various label
+  y_lab &lt;- paste0(y_lab, &quot;\n Error bar represents &quot;, errorbar) 
+  
+  if (f_pt == &quot;FALSE&quot; || f_pt == &quot;dodge&quot;) {
+    title &lt;- title_txt
+  } else if (f_pt == &quot;TRUE&quot;) {
+    title &lt;- fValue
+  } 
+  
+  ## summarising by group
+  df_sum &lt;- group_by(df, x) %&gt;%
+    summarise(ybar = mean(y, na.rm = TRUE), 
+              se = sd(y, na.rm = TRUE)/sqrt(length((y))), 
+              sd = sd(y, na.rm = TRUE),
+              n = n(),
+              confint_l = ybar - qt(1 - (0.05 / 2), n-1)*se, # CI assumes a t-distribution.
+              confint_h = ybar + qt(1 - (0.05 / 2), n-1)*se) %&gt;% 
+    mutate(ctrl = rep.int(ybar[which(x == xValue[ctrl_index])], nrow(.)),
+           effect = signif((ybar-ctrl)/ctrl*100, digits = 3)) %&gt;% 
+    mutate_at(.vars = vars(effect), 
+              .funs = funs(ifelse(. == 0, &quot;nc&quot;,ifelse(.&lt;0, 
+                                                      paste0(&quot;\u2193&quot;, abs(.), &quot;%&quot;), 
+                                                      paste0(&quot;\u2191&quot;, abs(.), &quot;%&quot;)))))
+  
+  
+  
+  ## plotting 
+  p &lt;- ggplot(data = df_sum, aes(x = x, y = ybar)) +
+    geom_col(fill = &quot;#A0A0A0&quot;,  width = 0.4) + # using geom_col instead of geom_bar
+    theme(axis.line = element_line(size=1, color = &quot;black&quot;),
+          axis.ticks.x = element_blank(),
+          aspect.ratio =1.6/(1+sqrt(5)),
+          panel.background = element_blank()) +
+    theme(plot.title = element_text(size = 23/div, hjust = 0.5),
+          plot.subtitle = element_text(size= 20/div, hjust = 0, face=&quot;italic&quot;, color=&quot;grey60&quot;),
+          axis.title.y = element_text(size = 15/div),
+          axis.title.x = element_text(size = 15/div),
+          axis.text.y = element_text(size= 12/div, color = &quot;black&quot;),
+          axis.text.x = element_text(size= 12/div, color = &quot;black&quot;),
+          legend.text = element_text(size= 15/div, color = &quot;black&quot;))+
+    scale_y_continuous(limits = c(0, y_max), expand = c(0,0))
+  
+  ## with dots 
+  if (withDots){
+    p &lt;- p + geom_point(data = df, aes(x = x, y = y), size = .5, shape=1)
+  }
+  
+  ## type of error bar
+  if (errorbar == &quot;SEM&quot;){
+    p &lt;- p + geom_errorbar(aes(ymin = ybar-se, ymax = ybar + se), width = 0.2)
+  } else if (errorbar == &quot;SD&quot;){
+    p &lt;- p + geom_errorbar(aes(ymin = ybar-sd, ymax = ybar + sd), width = 0.2)
+  } else if (errorbar == &quot;95%CI&quot;){
+    p &lt;- p + geom_errorbar(aes(ymin = confint_l, ymax = confint_h), width = 0.2)
+  } else {stop(&quot;error bar can only represent sem, se, of 95%CI.&quot;)}
+  
+  ## show effect size 
+  if (showeffect &amp;&amp; ano &lt; 0.05){
+    p &lt;- p + geom_text(data = subset(df_sum, x != x[which(grepl(xValue[ctrl_index], xValue, fixed=TRUE))]), aes(x = x, y = ybar/2, label = effect), size = 4/div, fontface = &quot;bold&quot;)
+  }
+  
+  
+  ## anova labelling 
+  if (ano &lt; 0.001){
+    ano_txt &lt;- &quot;P value from anova &lt; 0.001&quot;
+  } else if (ano &gt;= 0.001){
+    ano_txt &lt;- signif(ano, digits = 3) %&gt;% paste0(&quot;P value from anova = &quot;, .)
+  }
+  y_lab = yColname; x_lab = xColname
+  p &lt;- p + labs(title = title, subtitle = ano_txt, y = y_lab, x = x_lab )
+  
+  ## post hoc labelling 
+  if (ano &lt; 0.05){
+    y_pos &lt;- seq(0.8, 0.93, length.out = length(post_hoc_pairs))*y_max # significant bars&#39; y position
+    p &lt;- p + ggsignif::geom_signif(comparisons = post_hoc_pairs, 
+                                   y_position = y_pos, 
+                                   annotations = sign_ano, 
+                                   tip_length = rep.int(.02, length(post_hoc_pairs)*2), # double the length
+                                   textsize = 8/div,
+                                   vjust=0.8) 
+  } 
+  p
+}</code></pre>
+<div id="single-explanatory-variable." class="section level2">
+<h2>Single explanatory variable.</h2>
+<p>Only the time interval is considered to explain percentage of performance. There is no significant differnce among all intervals</p>
+<pre class="r"><code>repli_plot(df = perform, 
+           xColname = &quot;Time (units)&quot;,
+           xValue = c(&quot;Jan–Apr 2015&quot;, &quot;May–Aug 2015&quot;, &quot;Sep–Dec 2015&quot;, &quot;Jan–Apr 2016&quot;, &quot;May–Aug 2016&quot;, &quot;Sep–Dec 2016&quot;),
+           ctrl_index = 1,
+           yColname = &quot;% performance&quot;,
+           f_pt = &quot;FALSE&quot;,
+           title_txt = &quot;An individual&#39;s performance \n normalized by the respective maxima within the two years&quot;,
+           y_lab = &quot;a&quot;,
+           x_lab = &quot;b&quot;,
+           withDots = TRUE,
+           errorbar = &quot;SD&quot;,
+           showeffect = TRUE,
+           div = 1, 
+           y_max = 120)</code></pre>
+<p><img src="/post/2018-05-19-bar-plots-for-biological-replicates_files/figure-html/unnamed-chunk-3-1.png" width="720" /></p>
+</div>
+<div id="percentage-of-performance-against-time-interval-with-different-activities." class="section level2">
+<h2>Percentage of performance against time interval with different activities.</h2>
+<p>The four activities are used in statification. “Walking and running distance” and “Steps taken” are the two activities have significant increase throughout time.</p>
+<pre class="r"><code>split_activity &lt;- lapply(c(&quot;Flights of stairs climbed&quot;, &quot;Walking and running distance&quot;, &quot;Steps taken&quot;, &quot;Sleep quality&quot;), function(n){
+  filter(perform, activity == n) %&gt;% 
+    repli_plot(., 
+               xColname = &quot;Time (units)&quot;,
+               xValue = c(&quot;Jan–Apr 2015&quot;, &quot;May–Aug 2015&quot;, &quot;Sep–Dec 2015&quot;, &quot;Jan–Apr 2016&quot;, &quot;May–Aug 2016&quot;, &quot;Sep–Dec 2016&quot;),
+               ctrl_index = 1,
+               yColname = &quot;% performance&quot;,
+               f_pt = &quot;TRUE&quot;,
+               fColname = &quot;activity&quot;,
+               fValue = n,
+               title_txt = &quot;An individual&#39;s performance \n normalized by the respective maxima within the two years&quot;,
+               y_lab = &quot;a&quot;,
+               x_lab = &quot;b&quot;,
+               withDots = TRUE,
+               errorbar = &quot;SD&quot;,
+               showeffect = TRUE,
+               div = 1, 
+               y_max = 120)
+})
+
+do.call(grid.arrange, split_activity)</code></pre>
+<p><img src="/post/2018-05-19-bar-plots-for-biological-replicates_files/figure-html/unnamed-chunk-4-1.png" width="720" /></p>
+</div>
+</div>
+<div id="application-a-workflow-concerning-data-extraction-statistical-tests-and-data-presentation." class="section level1">
+<h1>Application: a workflow concerning data extraction, statistical tests and data presentation.</h1>
+<p>This project was initially aiming to find an automated process mimicing the barploting in Prism (New table &amp; graph &gt; Enter replicate values, stacked into columns). Visualisaing Post-hoc test in Prism was usually done manually. With this function in hand, we could be able to automate barplot.</p>
+<p>With the help of <code>readxl::read_excel(path = &quot;/your_path&quot;, sheet = &quot;tab&quot;)&quot;</code>, we could extract data bundled in an excel workbook, perform statistical test and compile the statistical reproducible result in latex/beamer or html.</p>
+</div>
+<div id="repli_plot-design-challenges-and-future-improvements" class="section level1">
+<h1><code>repli_plot</code> design challenges and future improvements</h1>
+<div id="div-and-managing-fontsize-from-graph" class="section level4">
+<h4><code>div</code> and managing fontsize from graph</h4>
+<p>Graph embedment is crucial in achieving literate programming since it automatically adds graph porduced by source block into specific location with appropriate dimesion and resolution. The process of graph embedment in this blog, and generally in all literature programming IDE (like Rstudio and Emacs Org mode, can be generally decomposed into the following processes</p>
+<ol style="list-style-type: decimal">
+<li>export the graph into <code>.png</code> format with appropriate height/width, apect ratio and resolution;</li>
+<li>includ a link pointing to the static graph in latex/html intermediate.</li>
+</ol>
+<p>Although <code>.pdf</code> is indepedent of the scale, <code>.png</code> is used to insert picture into web. In the process of rendering png, texts on the graph become problematic; the problem occurs when we start to combine multiple graphs, 4 in previous example, into a single png. The mechanism that causes the problem is that R text size depends on the graph area <a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> and is not scalable with other elements of the graph. As including 4 graphs arranging in a 2x2 matrix halves the width and heigh as compared to original, the invariable text size becomes inappropriated large and overlapping with each other <a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.
+There are a few solution that results this in multiple plot.</p>
+<ol style="list-style-type: decimal">
+<li><p>using a common scaling factor to reduce text size. <code>dev</code> implemented here and <code>cex</code> argument in <code>graphics::par</code> (see <code>help(par)</code>) are two examples. However, there might be problem.</p>
+<ul>
+<li>scaling leads to non-integer font size. Is there coresponding (non-integer) size for that font?</li>
+<li>I failed to defind a theme variable <code>text_theme &lt;- ggplot2::theme(with dev variable in)</code>, meaning the value of <code>dev</code> cannot be changed if a text_theme is used. I leave this for future exploration.</li>
+</ul></li>
+<li><p>using <code>knitr</code> chunk options. In Rmarkdown, given a fixed <code>fig.asp</code>, we vary <code>fig.width</code> and <code>dpi</code> but make sure the multiple remains the same.</p></li>
+</ol>
+<p><span class="math display">\[ total\ pixel\ in\ width = fig.width (inch) \times dpi(pixel\ per\ inch)\]</span></p>
+</div>
+<div id="positioning-significant-level-bars-among-dodge-bars." class="section level4">
+<h4>Positioning significant level bars among “dodge” bars.</h4>
+<p>Up to the point when this blog is conceived, <code>ggsignif</code> <a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> is still the only package that provide a ggplot layer to visualise significant level from pairwise comparison. To visualise two catigorical variables, <code>position = &quot;dodge&quot;</code> should be used as the arguement for <code>geom_bar</code>. However, “dodge” bars change the x positions thus we might need to adjustment.</p>
+<p>The adjustment is closely related to <em>bar width</em> and the <em>levels in dodged bar</em>. Take an example from <code>ggsignif</code> CRAN vignette <a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>, although this will be a future development.</p>
+<pre class="r"><code>dat &lt;- data.frame(Group = c(&quot;S1&quot;, &quot;S1&quot;, &quot;S2&quot;, &quot;S2&quot;),
+                  Sub   = c(&quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;),
+                  Value = c(3,5,7,8))  
+y_max = 10
+bar_width = 0.4/4
+annotation_df &lt;- data.frame(start = c(rep(1,5), 2)+c(-bar_width,-bar_width,-bar_width,bar_width,bar_width,-bar_width),
+                            end = c(1, rep(2,5))+c(bar_width,-bar_width,bar_width,-bar_width,bar_width,bar_width),
+                            y = seq(0.8, 0.93, length.out = 6)*y_max,
+                            label = 1:6)
+## intergroup comparison is +/- bar_width
+
+ggplot(dat, aes(Group, Value)) +
+  geom_bar(aes(fill = Sub), stat=&quot;identity&quot;, position=&quot;dodge&quot;, width=(bar_width*4)) +
+  geom_signif(xmin=annotation_df$start, 
+              xmax=annotation_df$end, 
+              annotations=annotation_df$label, 
+              y_position=annotation_df$y,  
+              textsize = 3, 
+              vjust = -0.2) +
+  scale_fill_manual(values = c(&quot;grey80&quot;, &quot;grey20&quot;))+
+  scale_y_continuous(limits = c(0, y_max), expand = c(0,0))</code></pre>
+<p><img src="/post/2018-05-19-bar-plots-for-biological-replicates_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Page 512, Crawley, M. (2012), The R Book. Wiley, 2nd edition.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p><a href="https://www.nature.com/articles/nmeth.2813">Points of Significance: Visualizing samples with box plots</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p><a href="http://genomicsclass.github.io/book/pages/plots_to_avoid.html">Plots to avoid from PH525x series - Biomedical Data Science</a><a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p><a href="https://www.nature.com/articles/s41551-017-0079">Show the dots in plots</a><a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn5"><p><a href="https://ndownloader.figshare.com/articles/4928888/versions/1">“Scatter plot.csv” from “Show the dots in plots”(the article in previous subtitle)</a><a href="#fnref5" class="footnote-back">↩</a></p></li>
+<li id="fn6"><p><a href="http://blog.revolutionanalytics.com/2009/01/10-tips-for-making-your-r-graphics-look-their-best.html">Section5, 10 tips for making your R graphics look their best</a><a href="#fnref6" class="footnote-back">↩</a></p></li>
+<li id="fn7"><p><a href="https://stackoverflow.com/questions/10302364/how-to-control-font-size-in-png">the example picture 2 in the question</a><a href="#fnref7" class="footnote-back">↩</a></p></li>
+<li id="fn8"><p><a href="https://cran.r-project.org/web/packages/ggsignif/vignettes/intro.html">ggsignif introduction. Adding significant level bars among dodged bar plot</a><a href="#fnref8" class="footnote-back">↩</a></p></li>
+<li id="fn9"><p><a href="https://cran.r-project.org/web/packages/ggsignif/README.html">ggsignif CRAN vignette</a><a href="#fnref9" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

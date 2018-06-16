@@ -1,0 +1,7 @@
+sample	condition	path
+1 	SRR493366  LB				  ../../static/sleuth/LB1
+2 	SRR493367  LB 				  ../../static/sleuth/LB2
+3 	SRR493368  LB 				  ../../static/sleuth/LB3
+4 	SRR493369  MG				  ../../static/sleuth/MG1
+5 	SRR493370  MG				  ../../static/sleuth/MG2
+6 	SRR493371  MG				  ../../static/sleuth/MG3

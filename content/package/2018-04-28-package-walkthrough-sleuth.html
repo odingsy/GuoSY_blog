@@ -1,0 +1,55 @@
+---
+title: 'Package walkthrough: sleuth'
+author: ''
+date: '2018-04-28'
+slug: package-walkthrough-sleuth
+draft: true
+categories:
+  - R
+  - package
+tags:
+  - bioinfo_tools
+---
+
+
+
+<div id="section" class="section level1">
+<h1></h1>
+</div>
+<div id="walk-through" class="section level1">
+<h1>Walk through</h1>
+<div id="kallisto-prepration" class="section level2">
+<h2>Kallisto prepration</h2>
+<p>We obtain the data as descripted in <a href="http://sepsis-omics.github.io/tutorials/modules/kallisto/">“Get data” section from “Differential gene expression using Kallisto and Degust”</a>. We process using the following bash code.</p>
+<pre class="bash"><code>cd /your_dirs_to_Ecoli_kallisto_files
+
+kallisto index -i transcripts.idx Ecoli_transcripts.fasta
+
+kallisto quant -b 100 -i transcripts.idx -o LB1 --single -l 500 -s 50 LB1.fastq.gz
+kallisto quant -b 100 -i transcripts.idx -o LB2 --single -l 500 -s 50 LB2.fastq.gz
+kallisto quant -b 100 -i transcripts.idx -o LB3 --single -l 500 -s 50 LB3.fastq.gz
+kallisto quant -b 100 -i transcripts.idx -o MG1 --single -l 500 -s 50 MG1.fastq.gz
+kallisto quant -b 100 -i transcripts.idx -o MG2 --single -l 500 -s 50 MG2.fastq.gz
+kallisto quant -b 100 -i transcripts.idx -o MG3 --single -l 500 -s 50 MG3.fastq.gz</code></pre>
+</div>
+<div id="sleuth-walkthrough" class="section level2">
+<h2>Sleuth Walkthrough</h2>
+<p>The aforementioned bash script yielded files that is a typical “3 treatment Vs 3 control” experimental design. According to <a href="https://pachterlab.github.io/sleuth_walkthroughs/trapnell/analysis.html">the official manual</a>, there are 4 lines with 3 functions that performs</p>
+<pre class="r"><code>if (packageVersion(&quot;sleuth&quot;) != &quot;0.29.0&quot;){
+    devtools::install_github(&quot;pachterlab/sleuth@v0.29.0&quot;)  
+}
+
+x &lt;- c(&quot;tidyverse&quot;,&quot;sleuth&quot;)
+x &lt;- lapply(x, require, character.only = TRUE)
+source(&quot;../../static/sleuth/sleuth_internal_structure.R&quot;) 
+
+## read the experiment design matrix
+t &lt;- read.table(&quot;../../static/sleuth/tbl.txt&quot;, header = T)
+t$path &lt;- as.character(t$path)
+
+test &lt;- PPP_sleuth_prep(t, extra_bootstrap_summary = TRUE, num_cores = 1)
+test &lt;- FFF_sleuth_fit(test, ~condition, &#39;full&#39;)
+test &lt;- RRR_sleuth_fit(test, ~1, &#39;reduced&#39;)
+test &lt;- LLL_sleuth_lrt(test, &#39;reduced&#39;, &#39;full&#39;)</code></pre>
+</div>
+</div>

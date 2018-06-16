@@ -1,0 +1,13 @@
+{
+	"n_targets": 4432,
+	"n_bootstraps": 100,
+	"n_processed": 279332,
+	"n_pseudoaligned": 86671,
+	"n_unique": 83786,
+	"p_pseudoaligned": 31.0,
+	"p_unique": 30.0,
+	"kallisto_version": "0.44.0",
+	"index_version": 10,
+	"start_time": "Tue Apr  3 20:12:06 2018",
+	"call": "kallisto quant -b 100 -i transcripts.idx -o MG1 --single -l 500 -s 50 MG1.fastq.gz"
+}
