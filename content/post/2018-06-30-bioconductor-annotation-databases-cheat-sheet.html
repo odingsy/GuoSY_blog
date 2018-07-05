@@ -1,0 +1,149 @@
+---
+title: "A cheat sheet for Bioconductor annotation packages"
+author: ''
+date: '2018-06-30'
+output: pdf_document
+slug: bioconductor-annotation-databases-cheat-sheet
+tags:
+- bioinfo_tools
+- data summary
+categories:
+- R
+- bioconductor
+---
+
+
+
+<p>Database query results in extraction of corresponding information from input; it is vital to information-rich diciplines like genomics and molecular biology. As a software project in molecular biology, bioconductor includes a large portion of offline databases that are “bundled” as annotation packages. These annotation packages are standardised uisng a grammar defined by <a href="https://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html"><code>AnnotationDbi</code></a>.</p>
+<p>The grammar consists a main function <code>AnnotationDbi::select</code> and the four arguments it contains are</p>
+<ul>
+<li>x: the database names (as AnnotationDb object).</li>
+<li>keys: input.</li>
+<li>keytype: input types.</li>
+<li>colunms: outype type.</li>
+</ul>
+<p>To a beginner of databases (such as Ensembl or NCBI), some difficulties in using these annotation packages.</p>
+<ul>
+<li>identify the “keytype” of an given input, espcially in the case of ID/accession number, is not trivial; database literacy needs to be there.</li>
+<li>when the information we need is not within a same annotation packages/databases, multiple databases are required and key variables that common among packages are required.</li>
+<li>During the learning process, I feel the R annotation package authors assume the reader to be expert in the databases while the databases manual touches little about API. So the related information are not usually systematic.</li>
+</ul>
+<p>This blog summarises the information of the four arguments for annotation packages that are based on human hg19/GRCh37 genome construct. The reason why choosing the 2009 version instead of 2013 version (hg38/GRCh38) is because the summary was initially served as a cheat sheet for a project related to Affy U133 plus2 probeset and this Affy is designed based on the old human genome construct.</p>
+<pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;TxDb.Hsapiens.UCSC.hg19.knownGene&quot;, &quot;EnsDb.Hsapiens.v75&quot;, &quot;Homo.sapiens&quot;, &quot;org.Hs.eg.db&quot;, &quot;hgu133plus2.db&quot;, &quot;GO.db&quot;, &quot;kableExtra&quot;) ## AnnotationHub
+y &lt;- lapply(x, function(n){suppressMessages(library(n, character.only = TRUE))})
+
+# extracting the keytypes (input type) and colums (output types) of all databases 
+txdb_k = keytypes(TxDb.Hsapiens.UCSC.hg19.knownGene)
+txdb_c = columns(TxDb.Hsapiens.UCSC.hg19.knownGene)
+
+ensdb_k = keytypes(EnsDb.Hsapiens.v75)
+ensdb_c = columns(EnsDb.Hsapiens.v75)
+
+hs_k = keytypes(Homo.sapiens)
+hs_c = columns(Homo.sapiens)
+
+orgdb_k = keytypes(org.Hs.eg.db)
+orgdb_c = columns(org.Hs.eg.db)
+
+probe_k = keytypes(hgu133plus2.db)
+probe_c = columns(hgu133plus2.db)
+
+go_k = keytypes(GO.db)
+go_c = columns(GO.db)
+
+iden &lt;- list(txdb_k, txdb_c, 
+             ensdb_k, ensdb_c,
+             hs_k, hs_c,
+             orgdb_k, orgdb_c,
+             probe_k, probe_c,
+             go_k, go_c)
+
+## obtain unique keys/columns
+rn &lt;- unique(unlist(iden)) 
+cn &lt;- c(&quot;txdbK&quot;, &quot;txdbC&quot;, 
+        &quot;ensdbK&quot;, &quot;ensdbC&quot;,
+        &quot;hsK&quot;, &quot;hsC&quot;,
+        &quot;orgdbK&quot;, &quot;orgdbC&quot;,
+        &quot;probeK&quot;, &quot;probeC&quot;,
+        &quot;goK&quot;, &quot;goC&quot;)
+
+## a null matrix
+mat &lt;- matrix(nrow = length(rn), ncol = length(cn),dimnames = list(rn, cn))
+
+## fill the keytype/column to the corresponding database. assigning 1 for presence. 
+iden_length &lt;- lapply(iden, function(n){
+  length(n)
+})
+iden_c &lt;- c()
+for(i in seq_along(cn)){
+  iden_c &lt;- c(iden_c, rep.int(cn[i], times = iden_length[[i]])) 
+}
+df &lt;- data_frame(from = iden_c, identifiers = unlist(iden))
+for (i in seq_along(1:nrow(df))){
+  mat[which(rownames(mat) == df[[i,2]]),
+      which(colnames(mat) == df[[i,1]])] &lt;- 1
+}
+
+mat[which(is.na(mat),arr.ind = TRUE)] &lt;- 0</code></pre>
+<p>A column called <code>keys</code> is constructed to list down the first few elements of each keytypes.</p>
+<pre class="r"><code>## concatenate the first a few element of the keys from each keytypes together seperated by \vert. 
+kc &lt;- vector(mode = &quot;character&quot;, length = 0L)
+conc_descri &lt;- function(key_string, max_length = 20){
+  ## concatinate the first a few keys as the description of key types 
+  concat_string &lt;- &quot;&quot;
+  for (ks in seq_along(1:length(key_string))){
+    ori_string &lt;- concat_string
+    if (!is.na(key_string[ks])){
+      concat_string &lt;- stringi::stri_paste(concat_string, key_string[ks], sep = &quot;|&quot;)
+    }
+    if (nchar(concat_string) &gt;= max_length) {
+      ## concat_string &lt;- ori_string
+      concat_string &lt;- strtrim(concat_string, max_length) %&gt;% 
+        paste0(., &quot;...&quot;)
+      break
+    }
+  }
+  return(concat_string)
+}
+
+for(i in 1:nrow(mat)){
+  row_df &lt;- mat[i, , drop = FALSE] == 1
+  row_df_colnames &lt;- colnames(row_df)[min(which(row_df)[which(row_df)%%2 == 1])]
+  if (!is.na(row_df_colnames) &amp;&amp; rownames(row_df) != &quot;ONTOLOGY&quot; &amp;&amp; rownames(row_df) != &quot;PROTDOMID&quot;){ ## these two keytypes has problems 
+    if(row_df_colnames == &quot;txdbK&quot;){
+      k &lt;- keys(TxDb.Hsapiens.UCSC.hg19.knownGene, keytype = rownames(row_df))
+    } else if (row_df_colnames == &quot;ensdbK&quot;){
+      k &lt;- keys(EnsDb.Hsapiens.v75, keytype = rownames(row_df))
+    } else if (row_df_colnames == &quot;hsK&quot;){
+      k &lt;- keys(Homo.sapiens, keytype = rownames(row_df))
+    } else if (row_df_colnames == &quot;orgdbK&quot;){
+      k &lt;- keys(org.Hs.eg.db, keytype = rownames(row_df))
+    } else if (row_df_colnames == &quot;probeK&quot;){
+      k &lt;- keys(hgu133plus2.db, keytype = rownames(row_df))
+    } else if (row_df_colnames == &quot;goK&quot;){
+      k &lt;- keys(GO.db, keytype = rownames(row_df))
+    } else {
+      k &lt;- &quot;&quot;
+    }
+    kc[i] &lt;-  conc_descri(key_string = k)
+  } else {
+    kc[i] &lt;- &quot;&quot;
+  }
+} </code></pre>
+<p><img src="/2018-06-30-bioconductor-annotation-databases-cheat-sheet.png" width="700" /></p>
+<p>The cheat sheet was knitted to PDF with the following code and you can <img src="/pdf.png" /> <a href="/2018-06-30-bioconductor-annotation-databases-cheat-sheet.pdf">download the cheatsheet.</a></p>
+<pre class="r"><code>################ latex code added before this R block ##############
+# \newpage
+# \pagenumbering{gobble}
+################ end ###############################################
+mat %&gt;%
+  as_data_frame(rownames = &quot;keytypes&quot;)%&gt;%
+  mutate_if(is.numeric, function(n){
+    ifelse(n == 1,
+           cell_spec(n, &quot;latex&quot;, bold = T, background = &quot;pink&quot;),
+           n)
+  }) %&gt;%
+  bind_cols(., data_frame(keys = Hmisc::latexTranslate(kc))) %&gt;% # add escape for latex output.
+  dplyr::select(keytypes, keys, everything()) %&gt;%
+  kable(., format = &quot;latex&quot;, escape = F, booktabs = T, linesep = &quot;&quot;, align = &quot;c&quot;) %&gt;%
+  kable_styling(font_size = 4, latex_options = c(&quot;hold_position&quot;))</code></pre>
