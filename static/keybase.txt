@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/shiyuanguo
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://guoshiyuan.rbind.io
+  * I am shiyuanguo (https://keybase.io/shiyuanguo) on keybase.
+  * I have a public key ASBVxxH-YOWD_kN6hGvk8Uvd1TAfGFF4nWN6TYePsVaS1Ao
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101bc5efe63b4ede41e4c137a2b9bc6bda31991b45cda5cff045ce0b0d347fc097c0a",
+      "host": "keybase.io",
+      "kid": "012055c711fe60e583fe437a846be4f14bddd5301f1851789d637a4d878fb15692d40a",
+      "uid": "b59730e48979e1321a25c49c8e5c7c19",
+      "username": "shiyuanguo"
+    },
+    "merkle_root": {
+      "ctime": 1531559234,
+      "hash": "9999ce1d05eec6849177a4b20042ad16b6af5b101b5793c464e3c16a2e285f8c32e27d7669f3c9ab9164ab005653ec439461d84a506a0f5162ba90db4f59b367",
+      "hash_meta": "d2f8ffdee66ef96098312f1c58832dbae48d99fa302d5fd4e4dfb1abce355510",
+      "seqno": 3264602
+    },
+    "service": {
+      "entropy": "Kf4BbbKQFt+Hvue49lco6Nwr",
+      "hostname": "guoshiyuan.rbind.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "2.3.0"
+  },
+  "ctime": 1531559254,
+  "expire_in": 504576000,
+  "prev": "3d98807f2c49e5995963f2c5fd7e5f1351d68be378d541f5936f8a1b95963848",
+  "seqno": 8,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgVccR/mDlg/5DeoRr5PFL3dUwHxhReJ1jek2Hj7FWktQKp3BheWxvYWTESpcCCMQgPZiAfyxJ5ZlZY/LF/X5fE1HWi+N41UH1k2+KG5WWOEjEIAJgj4V1bW1yMj2oyPF6fm2hhe+AgotDHyhgrqnqcVPbAgHCo3NpZ8RAkVGB5NhRw0qM6W9lT9fZISwCUjPr7PnWurM1PmTPyj1Ie8BL0FJLyuU1dyhXV5YWx+pT8GLVSPN0rD/yXp3sB6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIPcfCAnsgSOVdlD7C+1Qj8fF+IZUssCOKzrbnoDLHWKmo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/shiyuanguo
+
+==================================================================
