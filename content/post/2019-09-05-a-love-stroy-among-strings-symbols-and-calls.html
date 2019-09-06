@@ -10,7 +10,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Guo Shiyuan" />
+<meta name="author" content />
 
 <meta name="date" content="2019-09-05" />
 
@@ -365,7 +365,6 @@ summary {
 
 
 <h1 class="title toc-ignore">A Love Stroy among strings, symbols and calls</h1>
-<h4 class="author">Guo Shiyuan</h4>
 <h4 class="date">2019-09-05</h4>
 
 </div>
@@ -391,7 +390,7 @@ se &lt;- expr(x) # single unquoted expression
 fo &lt;- expr(&quot;x + 1&quot;) # function string expression 
 fs &lt;- &quot;x + 1&quot; # function string
 fe &lt;- expr(x + 1) # function expression</code></pre>
-<p>Here I will show the following conversion rules using examples</p>
+<p>Here I will show the following conversion rules using examples. A flow chart summarises the conversion rules.</p>
 <div id="constant-strings-are-self-quoting." class="section level4">
 <h4>Constant strings are self quoting.</h4>
 <pre class="r"><code>so == ss # expr(&quot;x&quot;) == &quot;x&quot;</code></pre>
