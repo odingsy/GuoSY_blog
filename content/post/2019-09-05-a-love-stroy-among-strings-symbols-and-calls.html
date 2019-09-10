@@ -97,8 +97,8 @@ str(parse_expr(fs)) # language x + 1</code></pre>
 <pre><code>##  symbol x + 1</code></pre>
 <pre class="r"><code># str(ensym(fe)) # == sym(expr(x + 1)) # error</code></pre>
 </div>
-<div id="parse_expr-and-expr_text-are-not-perfectly-symmetric" class="section level4">
-<h4><code>parse_expr()</code> and <code>expr_text()</code> are <a href="https://adv-r.hadley.nz/expressions.html#grammar">not perfectly symmetric</a></h4>
+<div id="parse_expr-and-deparse-are-not-perfectly-symmetric-but-expr_text-might-be-better" class="section level4">
+<h4><code>parse_expr()</code> and <code>deparse()</code> are <a href="https://adv-r.hadley.nz/expressions.html#grammar">not perfectly symmetric</a>, but expr_text might be better?</h4>
 <pre class="r"><code>(symbol &lt;- ensym(fs))</code></pre>
 <pre><code>## `x + 1`</code></pre>
 <pre class="r"><code>str(symbol)</code></pre>
@@ -107,4 +107,8 @@ str(parse_expr(fs)) # language x + 1</code></pre>
 <pre><code>## x + 1</code></pre>
 <pre class="r"><code>str(call)</code></pre>
 <pre><code>##  language x + 1</code></pre>
+<pre class="r"><code>(call &lt;- parse_expr(expr_text(symbol)))</code></pre>
+<pre><code>## `x + 1`</code></pre>
+<pre class="r"><code>str(call)</code></pre>
+<pre><code>##  symbol x + 1</code></pre>
 </div>
