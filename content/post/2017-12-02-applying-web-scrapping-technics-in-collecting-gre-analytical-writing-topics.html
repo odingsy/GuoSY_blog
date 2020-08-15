@@ -1,12 +1,12 @@
 ---
-title: "Applying web scrapping technics in collecting GRE analytical writing topics"
+title: "Web scraping of GRE analytical writing topics"
 author: ""
 date: '2017-12-02'
 output:
   pdf_document:
     keep_tex: true
 slug: applying-web-scrapping-technics-in-collecting-gre-analytical-writing-topics
-tags: collect_info
+tags: web_scraping
 categories: R
 ---
 
@@ -38,8 +38,10 @@ categories: R
 <ol style="list-style-type: decimal">
 <li>from html web address, extract the individual entities by using html tags <code>.divider-50~ p , .indented p</code> (assisted by SelectorGadget).</li>
 </ol>
-<pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;readr&quot;, &quot;rvest&quot;, &quot;openxlsx&quot;, &quot;kableExtra&quot;)
-x &lt;- sapply(x, require, character.only = TRUE)
+<pre class="r"><code>library(tidyverse)
+library(openxlsx)
+library(kableExtra)
+library(rvest)
 
 scraping &lt;- function(url, css){
   html_text(html_nodes(read_html(url), css))
@@ -61,9 +63,10 @@ issue[start_claim] &lt;- paste(issue[start_claim], &quot;\n&quot;,issue[start_cl
 ## delete item start with &quot;Reason&quot;
 issue &lt;- issue[-(start_claim + 1)]
 ## now odd is prompt and even is question 
-issue_tbl &lt;- tbl_df(matrix(issue, ncol = 2, byrow = T)) %&gt;%
-  mutate(., qn_no = as.numeric(factor(V2))) # number the question 
-colnames(issue_tbl) &lt;- c(&quot;background_info&quot;, &quot;question&quot;, &quot;qn_no&quot;)
+issue_tbl &lt;- matrix(issue, ncol = 2, byrow = T, dimnames = list(c(), c(c(&quot;background_info&quot;, &quot;question&quot;)))) %&gt;% 
+  as_tibble() %&gt;%
+  mutate(., qn_no = as.numeric(factor(&quot;question&quot;))) # number the question 
+
 
 ######################################################################
 ## for argument, double-line promt has no single/simple pattern, we identied/indexed questions. 
@@ -75,15 +78,23 @@ interval[2] &lt;- c(0) ## a minor adjust of the first interval.
 interval_tbl &lt;- tbl_df(cbind(argument, interval)) %&gt;%
   group_by(., interval) %&gt;%
   filter(., row_number() != n()) %&gt;%
-  ungroup()
-bg_tbl &lt;- aggregate(argument~interval, interval_tbl, paste, collapse = &quot;\n&quot;) %&gt;%
+  ungroup()</code></pre>
+<pre><code>## Warning: `tbl_df()` is deprecated as of dplyr 1.0.0.
+## Please use `tibble::as_tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## Warning in cbind(argument, interval): number of rows of result is not a multiple
+## of vector length (arg 1)</code></pre>
+<pre class="r"><code>bg_tbl &lt;- aggregate(argument~interval, interval_tbl, paste, collapse = &quot;\n&quot;) %&gt;%
   tbl_df
 ## split the questions out. 
 qn_tbl &lt;- tbl_df(cbind(argument, interval)) %&gt;%
   group_by(., interval) %&gt;%
   filter(., row_number() == n()) %&gt;%
-  ungroup()
-## joining prompts and questions. 
+  ungroup()</code></pre>
+<pre><code>## Warning in cbind(argument, interval): number of rows of result is not a multiple
+## of vector length (arg 1)</code></pre>
+<pre class="r"><code>## joining prompts and questions. 
 argument_tbl &lt;- inner_join(bg_tbl, qn_tbl, by = c(&quot;interval&quot; = &quot;interval&quot;)) %&gt;%
   select(., -interval) %&gt;%
   mutate(., qn_no = as.numeric(factor(argument.y)))
@@ -102,20 +113,20 @@ colnames(argument_tbl) &lt;- c(&quot;background_info&quot;, &quot;question&quot;
 # 
 # writeData(wb = wb, sheet = sn, x = issue_tbl, borders = &quot;n&quot;)
 # saveWorkbook(wb, file = &quot;./static/GRE_AW.xlsx&quot;, overwrite = TRUE)</code></pre>
-<div style="border: 1px solid #ddd; padding: 5px; tbody tr:nth-child(odd){
+<div style="border: 1px solid #ddd; padding: 0px; tbody tr:nth-child(odd){
   background-color: #4C8BF5;
   color: #fff;
 } overflow-y: scroll; height:200px; overflow-x: scroll; width:700px; ">
 <table class="table table-striped table-hover" style="font-size: 7px; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 background_info
 </th>
-<th style="text-align:left;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 question
 </th>
-<th style="text-align:right;">
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 qn_no
 </th>
 </tr>
@@ -129,7 +140,7 @@ Woven baskets characterized by a particular distinctive pattern have previously 
 Write a response in which you discuss what specific evidence is needed to evaluate the argument and explain how the evidence would weaken or strengthen the argument.
 </td>
 <td style="text-align:right;">
-7
+8
 </td>
 </tr>
 <tr>
@@ -141,7 +152,7 @@ The following appeared as part of a letter to the editor of a scientific journal
 Write a response in which you discuss one or more alternative explanations that could rival the proposed explanation and explain how your explanation(s) can plausibly account for the facts presented in the argument.
 </td>
 <td style="text-align:right;">
-1
+2
 </td>
 </tr>
 <tr>
@@ -152,15 +163,16 @@ The council of Maple County, concerned about the county’s becoming overdevelop
 Write a response in which you discuss what questions would need to be answered in order to decide whether the prediction and the argument on which it is based are reasonable. Be sure to explain how the answers to these questions would help to evaluate the prediction.
 </td>
 <td style="text-align:right;">
-4
+5
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-There is now evidence that the relaxed pace of life in small towns promotes better health and greater longevity than does the hectic pace of life in big cities. Businesses in the small town of Leeville report fewer days of sick leave taken by individual workers than do businesses in the nearby large city of Masonton. Furthermore, Leeville has only one physician for its one thousand residents, but in Masonton the proportion of physicians to residents is five times as high. Finally, the average age of Leeville residents is significantly higher than that of Masonton residents. These findings suggest that people seeking longer and healthier lives should consider moving to small communities.
+The following appeared in a memo from the owner of a chain of cheese stores located throughout the United States.
+“For many years all the stores in our chain have stocked a wide variety of both domestic and imported cheeses. Last year, however, all of the five best-selling cheeses at our newest store were domestic cheddar cheeses from Wisconsin. Furthermore, a recent survey by Cheeses of the World magazine indicates an increasing preference for domestic cheeses among its subscribers. Since our company can reduce expenses by limiting inventory, the best way to improve profits in all of our stores is to discontinue stocking many of our varieties of imported cheese and concentrate primarily on domestic cheeses.”
 </td>
 <td style="text-align:left;">
-Write a response in which you examine the stated and/or unstated assumptions of the argument. Be sure to explain how the argument depends on these assumptions and what the implications are for the argument if the assumptions prove unwarranted.
+Write a response in which you discuss what specific evidence is needed to evaluate the argument and explain how the evidence would weaken or strengthen the argument.
 </td>
 <td style="text-align:right;">
 8
@@ -168,60 +180,50 @@ Write a response in which you examine the stated and/or unstated assumptions of 
 </tr>
 <tr>
 <td style="text-align:left;">
-The following was written as a part of an application for a small-business loan by a group of developers in the city of Monroe.
-“Jazz music is extremely popular in the city of Monroe: over 100,000 people attended Monroe’s annual jazz festival last summer, and the highest-rated radio program in Monroe is ‘Jazz Nightly,’ which airs every weeknight. Also, a number of well-known jazz musicians own homes in Monroe. Nevertheless, the nearest jazz club is over an hour away. Given the popularity of jazz in Monroe and a recent nationwide study indicating that the typical jazz fan spends close to $1,000 per year on jazz entertainment, we predict that our new jazz music club in Monroe will be a tremendously profitable enterprise.”
+The following appeared in a memorandum from the general manager of KNOW radio station.
+“Several factors indicate that radio station KNOW should shift its programming from rock-and-roll music to a continuous news format. Consider, for example, that the number of people in our listening area over fifty years of age has increased dramatically, while our total number of listeners has declined. Also, music stores in our area report decreased sales of recorded music. Finally, continuous news stations in neighboring cities have been very successful. The switch from rock-and-roll music to 24-hour news will attract older listeners and secure KNOW radio’s future.”
+</td>
+<td style="text-align:left;">
+Write a response in which you examine the stated and/or unstated assumptions of the argument. Be sure to explain how the argument depends on these assumptions and what the implications are for the argument if the assumptions prove unwarranted.
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The following appeared in a memorandum from the manager of KNOW radio station.
+“Several factors indicate that KNOW radio can no longer succeed as a rock-and-roll music station. Consider, for example, that the number of people in our listening area over fifty years of age has increased dramatically, while our total number of listeners has declined. Also, music stores in our area report decreased sales of rock-and-roll music. Finally, continuous news stations in neighboring cities have been very successful. We predict that switching KNOW radio from rock-and-roll music to 24-hour news will allow the station to attract older listeners and make KNOW radio more profitable than ever.”
 </td>
 <td style="text-align:left;">
 Write a response in which you discuss what questions would need to be answered in order to decide whether the prediction and the argument on which it is based are reasonable. Be sure to explain how the answers to these questions would help to evaluate the prediction.
 </td>
 <td style="text-align:right;">
-4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-There is now evidence that the relaxed pace of life in small towns promotes better health and greater longevity than does the hectic pace of life in big cities. Businesses in the small town of Leeville report fewer days of sick leave taken by individual workers than do businesses in the nearby large city of Masonton. Furthermore, Leeville has only one physician for its one thousand residents, but in Masonton the proportion of physicians to residents is five times as high. Finally, the average age of Leeville residents is significantly higher than that of Masonton residents. These findings suggest that the relaxed pace of life in Leeville allows residents to live longer, healthier lives.
-</td>
-<td style="text-align:left;">
-Write a response in which you discuss one or more alternative explanations that could rival the proposed explanation and explain how your explanation(s) can plausibly account for the facts presented in the argument.
-</td>
-<td style="text-align:right;">
-1
+5
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<div style="border: 1px solid #ddd; padding: 5px; tbody tr:nth-child(odd){
+<div style="border: 1px solid #ddd; padding: 0px; tbody tr:nth-child(odd){
   background-color: #4C8BF5;
   color: #fff;
 } overflow-y: scroll; height:200px; overflow-x: scroll; width:700px; ">
 <table class="table table-striped table-hover" style="font-size: 7px; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 background_info
 </th>
-<th style="text-align:left;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 question
 </th>
-<th style="text-align:right;">
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 qn_no
 </th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-As people rely more and more on technology to solve problems, the ability of humans to think for themselves will surely deteriorate.
-</td>
-<td style="text-align:left;">
-Write a response in which you discuss the extent to which you agree or disagree with the statement and explain your reasoning for the position you take. In developing and supporting your position, you should consider ways in which the statement might or might not hold true and explain how these considerations shape your position.
-</td>
-<td style="text-align:right;">
-4
-</td>
-</tr>
 <tr>
 <td style="text-align:left;">
 To understand the most important characteristics of a society, one must study its major cities.
@@ -230,7 +232,7 @@ To understand the most important characteristics of a society, one must study it
 Write a response in which you discuss the extent to which you agree or disagree with the statement and explain your reasoning for the position you take. In developing and supporting your position, you should consider ways in which the statement might or might not hold true and explain how these considerations shape your position.
 </td>
 <td style="text-align:right;">
-4
+1
 </td>
 </tr>
 <tr>
@@ -241,7 +243,7 @@ Educational institutions have a responsibility to dissuade students from pursuin
 Write a response in which you discuss the extent to which you agree or disagree with the claim. In developing and supporting your position, be sure to address the most compelling reasons and/or examples that could be used to challenge your position.
 </td>
 <td style="text-align:right;">
-2
+1
 </td>
 </tr>
 <tr>
@@ -252,7 +254,7 @@ Scandals are useful because they focus our attention on problems in ways that no
 Write a response in which you discuss the extent to which you agree or disagree with the claim. In developing and supporting your position, be sure to address the most compelling reasons and/or examples that could be used to challenge your position.
 </td>
 <td style="text-align:right;">
-2
+1
 </td>
 </tr>
 <tr>
@@ -269,13 +271,25 @@ Write a response in which you discuss the extent to which you agree or disagree 
 </tr>
 <tr>
 <td style="text-align:left;">
-A nation should require all of its students to study the same national curriculum until they enter college.
+Some people believe that government funding of the arts is necessary to ensure that the arts can flourish and be available to all people. Others believe that government funding of the arts threatens the integrity of the arts.
 </td>
 <td style="text-align:left;">
-Write a response in which you discuss the extent to which you agree or disagree with the recommendation and explain your reasoning for the position you take. In developing and supporting your position, describe specific circumstances in which adopting the recommendation would or would not be advantageous and explain how these examples shape your position.
+Write a response in which you discuss which view more closely aligns with your own position and explain your reasoning for the position you take. In developing and supporting your position, you should address both of the views presented.
 </td>
 <td style="text-align:right;">
-3
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Claim: In any field — business, politics, education, government — those in power should step down after five years.
+Reason: The surest path to success for any enterprise is revitalization through new leadership.
+</td>
+<td style="text-align:left;">
+Write a response in which you discuss the extent to which you agree or disagree with the claim and the reason on which that claim is based.
+</td>
+<td style="text-align:right;">
+1
 </td>
 </tr>
 </tbody>

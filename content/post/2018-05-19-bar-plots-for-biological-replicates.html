@@ -448,6 +448,7 @@ y_max should ~20% higher that maximun y to make space for significant bar
            showeffect = TRUE,
            div = 1, 
            y_max = 120)</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p><img src="/post/2018-05-19-bar-plots-for-biological-replicates_files/figure-html/unnamed-chunk-3-1.png" width="720" /></p>
 </div>
 <div id="percentage-of-performance-against-time-interval-with-different-activities." class="section level2">
@@ -471,9 +472,12 @@ y_max should ~20% higher that maximun y to make space for significant bar
                showeffect = TRUE,
                div = 1, 
                y_max = 120)
-})
-
-do.call(grid.arrange, split_activity)</code></pre>
+})</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)
+## `summarise()` ungrouping output (override with `.groups` argument)
+## `summarise()` ungrouping output (override with `.groups` argument)
+## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>do.call(grid.arrange, split_activity)</code></pre>
 <p><img src="/post/2018-05-19-bar-plots-for-biological-replicates_files/figure-html/unnamed-chunk-4-1.png" width="720" /></p>
 </div>
 </div>

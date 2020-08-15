@@ -2,7 +2,9 @@
 title: "A cheat sheet for Bioconductor annotation packages"
 author: ''
 date: '2018-06-30'
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 slug: bioconductor-annotation-databases-cheat-sheet
 tags:
 - bioinfo_tools
@@ -78,7 +80,7 @@ iden_c &lt;- c()
 for(i in seq_along(cn)){
   iden_c &lt;- c(iden_c, rep.int(cn[i], times = iden_length[[i]])) 
 }
-df &lt;- data_frame(from = iden_c, identifiers = unlist(iden))
+df &lt;- tibble(from = iden_c, identifiers = unlist(iden))
 for (i in seq_along(1:nrow(df))){
   mat[which(rownames(mat) == df[[i,2]]),
       which(colnames(mat) == df[[i,1]])] &lt;- 1
@@ -137,13 +139,13 @@ for(i in 1:nrow(mat)){
 # \pagenumbering{gobble}
 ################ end ###############################################
 mat %&gt;%
-  as_data_frame(rownames = &quot;keytypes&quot;)%&gt;%
+  as_tibble(rownames = &quot;keytypes&quot;)%&gt;%
   mutate_if(is.numeric, function(n){
     ifelse(n == 1,
            cell_spec(n, &quot;latex&quot;, bold = T, background = &quot;pink&quot;),
            n)
   }) %&gt;%
-  bind_cols(., data_frame(keys = Hmisc::latexTranslate(kc))) %&gt;% # add escape for latex output.
+  bind_cols(., tibble(keys = Hmisc::latexTranslate(kc))) %&gt;% # add escape for latex output.
   dplyr::select(keytypes, keys, everything()) %&gt;%
   kable(., format = &quot;latex&quot;, escape = F, booktabs = T, linesep = &quot;&quot;, align = &quot;c&quot;) %&gt;%
   kable_styling(font_size = 4, latex_options = c(&quot;hold_position&quot;))</code></pre>

@@ -1,7 +1,7 @@
 baseurl = "https://guoshiyuan.netlify.com/"
 languageCode = "en-us"
-title = "Guo Shiyuan"
-theme = "hugo-lithium"
+title = "Shiyuan's Blog"
+theme = "hugo-xmin"
 googleAnalytics = "UA-118647136-1"
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "public/"]
@@ -10,29 +10,43 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "public/"]
     post = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+[[menu.main]]
     name = "About"
     url = "/about/"
+    weight = 2
+[[menu.main]]
+    name = "Categories"
+    url = "/categories/"
+    weight = 3
+[[menu.main]]
+    name = "Tags"
+    url = "/tags/"
+    weight = 4
 #[[menu.main]]
-#    name = "GitHub"
-#    url = "https://github.com/rstudio/blogdown"
-#[[menu.main]]
-#    name = "Twitter"
-#    url = "https://twitter.com/rstudio"
+#    name = "Subscribe"
+#    url = "/index.xml"
 
 [params]
-    description = "A academic website with footprints about academic journey, emacs (org mode, ess and R"
+    description = "An academic website and personal blog. "
+    footer = "Made with Hugo/Blogdown | [Github](https://github.com/odingsy)"
 
     # options for highlight.js (version, additional languages, and theme)
-    highlightjsVersion = "9.11.0"
-    highlightjsCDN = "//cdn.bootcss.com"
-    highlightjsLang = ["r", "yaml", "tex"]
+    highlightjsVersion = "9.12.0"
+    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libshighlight.js/9.12.0"
+    highlightjsLang = ["r", "yaml", "tex", "python", "bash"]
     highlightjsTheme = "github"
 
-    MathJaxCDN = "//cdn.bootcss.com"
-    MathJaxVersion = "2.7.1"
+    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+    MathJaxVersion = "2.7.5"
 
     # table css, https://github.com/rstudio/blogdown/issues/280
     customCSS = ["css/style.tables.css"]
+    
+    # path to the favicon, under "static"
+    favicon = "favicon.ico"
     
     [params.logo]
     url = "blog.png"
@@ -40,3 +54,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "public/"]
     height = 50
     alt = "Logo"
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

@@ -14,17 +14,17 @@ categories: R
 
 
 <p>Non-standard evaluation (NSE) is a cornerstone of tidyverse packages like <code>dpylr</code> and <code>ggplot2</code>. It enables R to generate code systematically and evaluates it in a specific environment.</p>
-<p>Generating code is base on expressions. As what documented in <a href="https://adv-r.hadley.nz/expressions.html#introduction-17">AdvanceR Chap18.1</a>, expressions are implemented to</p>
+<p>Generating code is based on expressions. As what documented in <a href="https://adv-r.hadley.nz/expressions.html#introduction-17">AdvanceR Chap18.1</a>, expressions are implemented to</p>
 <blockquote>
 <p>separate our description of the action from the action itself.</p>
 </blockquote>
 <p>Expressions are created using <code>rlang::expr()</code> and they mainly include</p>
 <ul>
 <li>constant: <code>rlang::is_syntactic_literal()</code> is TRUE. Only character vector will be discuss here since both “description of the action” and “action itself” are generally generated from string. Therefore, <code>str</code> returns <code>chr</code>.</li>
-<li>symbol: <code>str</code> returns "symbol and <code>rlang::is_symbol()</code> is TRUE and</li>
+<li>symbol: <code>str</code> returns &quot;symbol and <code>rlang::is_symbol()</code> is TRUE and</li>
 <li>call: <code>str</code> returns “language” and <code>rlang::is_call()</code> is TRUE. (<a href="https://adv-r.hadley.nz/expressions.html#summary">AdvanceR Chap18.3.4 summary</a>)</li>
 </ul>
-<p>This post explores what are them and how to convert among them using <code>rlang</code> functions. These problems are prerequisites in implementing NSE that troubled me quite a while. I hoped to concretize those through this post. I characterized functions based on input/output, although they might be recommendation or prescription on their applicable niche.</p>
+<p>This post explores what are them and how to convert among them using functions in <a href=""><code>rlang</code> package</a><a href="https://cran.r-project.org/web/packages/rlang/index.html" class="uri">https://cran.r-project.org/web/packages/rlang/index.html</a>, aiming to nail down those jaggons in a more intuitive way. To this end, I characterized functions based on input/output, although they might be some nitty-gritty details for choosing one function over the other in a specific context.</p>
 <p>I defined two sets of testing variables, each corresponds to a type of strings: the first set is single object that could be used as a name of an object; the second set contains operators that could be parse as a function call. Each set consists of expression of a string, string itself and expression of unquoted.</p>
 <pre class="r"><code>so &lt;- expr(&quot;x&quot;) # single string expression 
 ss &lt;- &quot;x&quot; # single string
@@ -74,7 +74,6 @@ fe &lt;- expr(x + 1) # function expression</code></pre>
 <pre class="r"><code>parse_expr(ss) == se # TRUE</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code># parse_expr(se) # error: must be a character vector, not symbol
-
 
 str(parse_expr(fs)) # language x + 1</code></pre>
 <pre><code>##  language x + 1</code></pre>

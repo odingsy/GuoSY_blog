@@ -8,7 +8,7 @@
         <color>ffd18802</color>
         <scale>1</scale>
         <Icon>
-          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
         </Icon>
         <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
       </IconStyle>
@@ -24,7 +24,7 @@
         <color>ffd18802</color>
         <scale>1</scale>
         <Icon>
-          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
         </Icon>
         <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
       </IconStyle>
@@ -197,15 +197,6 @@
         <Point>
           <coordinates>
             103.8606262,1.5571203,0
-          </coordinates>
-        </Point>
-      </Placemark>
-      <Placemark>
-        <name>2007 Nov to now</name>
-        <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
-        <Point>
-          <coordinates>
-            103.866806,1.3566847,0
           </coordinates>
         </Point>
       </Placemark>
@@ -503,6 +494,42 @@
         <Point>
           <coordinates>
             118.6280974,4.1160971,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2019 Sep_NewHome</name>
+        <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -117.3281169,33.9797078,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2019 Dec</name>
+        <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -158.281083,21.5750451,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2019 Nov</name>
+        <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -116.1449519,33.993116,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2007 Nov-2019 Aug </name>
+        <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            103.8695526,1.3498202,0
           </coordinates>
         </Point>
       </Placemark>

@@ -26,8 +26,8 @@ tags:
 <div id="simulating-a-dataset-skippable" class="section level1">
 <h1>Simulating a dataset (skippable)</h1>
 <p>To regenerate the table automatically, we firstly simulate the raw data from <a href="https://doi.org/10.3892/ol.2017.6944">the Table II</a>. It basically reverses <a href="http://www.cookbook-r.com/Manipulating_data/Converting_between_data_frames_and_contingency_tables/">the contigenct tables back to counts</a> and cbind them together.</p>
-<pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;kableExtra&quot;)
-x &lt;- sapply(x, require, character.only = TRUE)
+<pre class="r"><code>library(tidyverse)
+library(kableExtra)
 
 
 countsToCases &lt;- function(x, countcol = &quot;Freq&quot;) {
@@ -42,53 +42,53 @@ countsToCases &lt;- function(x, countcol = &quot;Freq&quot;) {
 }
 
 sex &lt;- as.table(matrix(c(56L, 22L, 24L, 8L), ncol = 2, 
-                       dimnames = list(Sex = c(&quot;Male&quot;, &quot;Female&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+                       dimnames = list(sex = c(&quot;Male&quot;, &quot;Female&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-age &lt;- as.table(matrix(c(40L, 38L, 14L, 18L), ncol = 2, dimnames = list( `Age, years`= c(&quot;&gt;=60&quot;, &quot;&lt;60&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+age &lt;- as.table(matrix(c(40L, 38L, 14L, 18L), ncol = 2, dimnames = list(age = c(&quot;&gt;=60&quot;, &quot;&lt;60&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-ts &lt;- as.table(matrix(c(45L, 33L, 17L, 15L), ncol = 2, dimnames = list(`Tumor size, mm` = c(&quot;&gt;=50&quot;, &quot;&lt;50&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+ts &lt;- as.table(matrix(c(45L, 33L, 17L, 15L), ncol = 2, dimnames = list(size = c(&quot;&gt;=50&quot;, &quot;&lt;50&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-tl &lt;- as.table(matrix(c(20L, 28L, 30L, 6L, 10L, 16L), ncol = 2, dimnames = list(`Tumor location` = c(&quot;Fundus&quot;, &quot;Body&quot;, &quot;Antrum&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+tl &lt;- as.table(matrix(c(20L, 28L, 30L, 6L, 10L, 16L), ncol = 2, dimnames = list(loc = c(&quot;Fundus&quot;, &quot;Body&quot;, &quot;Antrum&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-di &lt;- as.table(matrix(c(32L, 46L, 12L, 20L), ncol = 2, dimnames = list( Differentiation = c(&quot;Well or moderate&quot;, &quot;Poor&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+di &lt;- as.table(matrix(c(32L, 46L, 12L, 20L), ncol = 2, dimnames = list(diff = c(&quot;Well or moderate&quot;, &quot;Poor&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-li &lt;- as.table(matrix(c(14L, 64L, 12L, 20L), ncol = 2, dimnames = list( `Local invasion`= c(&quot;T1-T2&quot;, &quot;T3-T4&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+li &lt;- as.table(matrix(c(14L, 64L, 12L, 20L), ncol = 2, dimnames = list(inv = c(&quot;T1-T2&quot;, &quot;T3-T4&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-nm &lt;- as.table(matrix(c(58L, 20L, 23L, 9L), ncol = 2, dimnames = list(`Node metastasis` = c(&quot;Yes&quot;, &quot;No&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+nm &lt;- as.table(matrix(c(58L, 20L, 23L, 9L), ncol = 2, dimnames = list(node = c(&quot;Yes&quot;, &quot;No&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-dm &lt;- as.table(matrix(c(22L, 56L, 2L, 30L), ncol = 2, dimnames = list(`Distant metastasis` = c(&quot;Yes&quot;, &quot;No&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+dm &lt;- as.table(matrix(c(22L, 56L, 2L, 30L), ncol = 2, dimnames = list(meta = c(&quot;Yes&quot;, &quot;No&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
-tst &lt;- as.table(matrix(c(7L, 13L, 36L,22L, 6L, 9L, 15L, 2L), ncol = 2, dimnames = list(`TNM stage` = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;,&quot;IV&quot;), `HS6ST2 expression` = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
+tst &lt;- as.table(matrix(c(7L, 13L, 36L,22L, 6L, 9L, 15L, 2L), ncol = 2, dimnames = list(tnm = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;,&quot;IV&quot;), expr = c(&quot;Positive&quot;, &quot;Negative&quot;)))) %&gt;% 
   as_tibble(n = &quot;Freq&quot;) %&gt;%
   countsToCases(.)
 
 
 ## checking the +/- expression column. 
-x &lt;- cbind(sex[,&quot;HS6ST2.expression&quot;],
-      age[,&quot;HS6ST2.expression&quot;],
-      ts[,&quot;HS6ST2.expression&quot;],
-      tl[,&quot;HS6ST2.expression&quot;],
-      di[,&quot;HS6ST2.expression&quot;],
-      li[,&quot;HS6ST2.expression&quot;],
-      nm[,&quot;HS6ST2.expression&quot;],
-      dm[,&quot;HS6ST2.expression&quot;],
-      tst[,&quot;HS6ST2.expression&quot;])
+x &lt;- cbind(sex[,2],
+      age[,2],
+      ts[,2],
+      tl[,2],
+      di[,2],
+      li[,2],
+      nm[,2],
+      dm[,2],
+      tst[,2])
 k &lt;- as.data.frame(expand.grid(1:ncol(x),1:ncol(x))) 
 
 ## test whether HS6ST2 is the same to ensure no errors.
@@ -98,16 +98,16 @@ k &lt;- as.data.frame(expand.grid(1:ncol(x),1:ncol(x)))
 
 
 df &lt;- bind_cols(sex[,1], age[,1], ts[,1], tl[,1], di[,1], li[,1], nm[,1], dm[,1], tst) %&gt;% 
-  mutate_at(.vars = c(&quot;Sex&quot;), funs(factor(., levels = c(&quot;Male&quot;, &quot;Female&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Age..years&quot;), funs(factor(., levels = c(&quot;&gt;=60&quot;, &quot;&lt;60&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Tumor.size..mm&quot;), funs(factor(., levels = c(&quot;&gt;=50&quot;, &quot;&lt;50&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Tumor.location&quot;), funs(factor(., levels = c(&quot;Fundus&quot;, &quot;Body&quot;, &quot;Antrum&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Differentiation&quot;), funs(factor(., levels = c(&quot;Well or moderate&quot;, &quot;Poor&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Local.invasion&quot;), funs(factor(., levels = c(&quot;T1-T2&quot;, &quot;T3-T4&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Node.metastasis&quot;), funs(factor(., levels = c(&quot;Yes&quot;, &quot;No&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;Distant.metastasis&quot;), funs(factor(., levels = c(&quot;Yes&quot;, &quot;No&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;TNM.stage&quot;), funs(factor(., levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;,&quot;IV&quot;)))) %&gt;%
-  mutate_at(.vars = c(&quot;HS6ST2.expression&quot;), funs(factor(., levels = c(&quot;Positive&quot;, &quot;Negative&quot;))))
+  mutate_at(.vars = c(&quot;sex&quot;), list(~factor(., levels = c(&quot;Male&quot;, &quot;Female&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;age&quot;), list(~factor(., levels = c(&quot;&gt;=60&quot;, &quot;&lt;60&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;size&quot;), list(~factor(., levels = c(&quot;&gt;=50&quot;, &quot;&lt;50&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;loc&quot;), list(~factor(., levels = c(&quot;Fundus&quot;, &quot;Body&quot;, &quot;Antrum&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;diff&quot;), list(~factor(., levels = c(&quot;Well or moderate&quot;, &quot;Poor&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;inv&quot;), list(~factor(., levels = c(&quot;T1-T2&quot;, &quot;T3-T4&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;node&quot;), list(~factor(., levels = c(&quot;Yes&quot;, &quot;No&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;meta&quot;), list(~factor(., levels = c(&quot;Yes&quot;, &quot;No&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;tnm&quot;), list(~factor(., levels = c(&quot;I&quot;, &quot;II&quot;, &quot;III&quot;,&quot;IV&quot;)))) %&gt;%
+  mutate_at(.vars = c(&quot;expr&quot;), list(~factor(., levels = c(&quot;Positive&quot;, &quot;Negative&quot;))))
 
 colnames(df) &lt;- c(&quot;Sex&quot;, &quot;Age, years&quot;, &quot;Tumor size, mm&quot;, &quot;Tumor location&quot;, &quot;Differentiation&quot;, &quot;Local invasion&quot;, &quot;Node metastasis&quot;, &quot;Distant metastasis&quot;, &quot;TNM stage&quot;, &quot;HS6ST2 expression&quot;)
 
@@ -211,7 +211,8 @@ specify_decimal &lt;- function(x, k = 1) {
     perc_tbl[,ncol(perc_tbl)+1] &lt;- as.character(NA) # a slot for pval
     perc_tbl[nrow(perc_tbl)+1,] &lt;- as.character(NA) # a slot for header
     perc_tbl &lt;- perc_tbl[c(nrow(perc_tbl), 1:(nrow(perc_tbl)-1)),] 
-    perc_tbl[1, c(1,ncol(perc_tbl))] &lt;- c(ind_name, pval)
+    perc_tbl[1, c(ncol(perc_tbl))] &lt;- pval
+    perc_tbl[1, 1] &lt;- ind_name
     l[[ind_ncol]] &lt;- perc_tbl
   }
   
@@ -252,7 +253,7 @@ specify_decimal &lt;- function(x, k = 1) {
 <th style="border-bottom:hidden" colspan="1">
 </th>
 <th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
 HS6ST2<br> expression
 </div>
 </th>
@@ -751,7 +752,7 @@ IV
 <th style="border-bottom:hidden" colspan="1">
 </th>
 <th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
 HS6ST2<br> expression
 </div>
 </th>

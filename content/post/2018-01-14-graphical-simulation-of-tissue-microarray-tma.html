@@ -26,8 +26,9 @@ categories: R
 <li>to make choice the suitable colors, hex code from Digital Color Meter (a Mac program) is used with setting “Display in sRGB” on the previous image.</li>
 <li>background is given a constant 30%. The rest 70% stained area is further divided into respective brown as indicated.</li>
 </ul>
-<pre class="r"><code>x &lt;- c(&quot;tidyverse&quot;, &quot;gridExtra&quot;)
-x &lt;- sapply(x, require, character.only = TRUE)
+<pre class="r"><code>library(tidyverse)
+library(gridExtra)
+
 
 perc_plot &lt;- function(B = 10000, freq, nonstain_freq = .3, bg = &quot;#FFFFFF&quot;, DAP = &quot;#AA6845&quot;, hematoxylin = &quot;#38A5D3&quot;){
   t &lt;- 2*pi*runif(n = B)
@@ -40,14 +41,12 @@ perc_plot &lt;- function(B = 10000, freq, nonstain_freq = .3, bg = &quot;#FFFFFF
       i
     }})
   
-  r &lt;- tbl_df(matrix(r, ncol = 1))
-  
   ## use ~rep.int~ instread of ~rep~, since the danger of having argument time as an operation. see help(&quot;rep&quot;)
   samp_rdm &lt;- sample(c(rep.int(0, B*nonstain_freq), rep.int(1, B*(1-nonstain_freq)*freq+1), rep.int(2, B*(1-nonstain_freq)*(1-freq)+1)), size = B) 
   
   
-  r %&gt;%
-    mutate(., x =  .[[1]]*cos(t), y =  .[[1]]*sin(t), stained = factor(samp_rdm)) %&gt;%
+tibble(a = r) %&gt;% 
+    mutate(., x =  a*cos(t), y =  a*sin(t), stained = factor(samp_rdm)) %&gt;%
     ggplot(aes(x = x, y = y, color = stained)) + geom_point()+coord_fixed()+
     scale_color_manual(values = c(bg, DAP, hematoxylin)) +
     labs(subtitle= paste0(freq*100, &quot;% DAP staining&quot;))+
@@ -68,7 +67,7 @@ perc_plot &lt;- function(B = 10000, freq, nonstain_freq = .3, bg = &quot;#FFFFFF
 
 tp &lt;- lapply(seq(from = 0.05, to = 1, by = 0.05), function(n) perc_plot(freq = n))
 
-do.call(grid.arrange,tp)</code></pre>
+base::do.call(gridExtra::grid.arrange,tp)</code></pre>
 <p><img src="/post/2018-01-14-graphical-simulation-of-tissue-microarray-tma_files/figure-html/unnamed-chunk-1-1.png" width="70%" /></p>
 </div>
 <div id="a-reflection" class="section level1">
