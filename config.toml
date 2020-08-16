@@ -5,6 +5,7 @@ theme = "hugo-xmin"
 googleAnalytics = "UA-118647136-1"
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "public/"]
+footnotereturnlinkcontents = "↩"
 
 [permalinks]
     post = "/:year/:month/:day/:slug/"
@@ -32,27 +33,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "public/"]
 [params]
     description = "An academic website and personal blog. "
     footer = "Made with Hugo/Blogdown | [Github](https://github.com/odingsy)"
-
-    # options for highlight.js (version, additional languages, and theme)
-    highlightjsVersion = "9.12.0"
-    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libshighlight.js/9.12.0"
-    highlightjsLang = ["r", "yaml", "tex", "python", "bash"]
-    highlightjsTheme = "github"
-
-    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
-    MathJaxVersion = "2.7.5"
-
-    # table css, https://github.com/rstudio/blogdown/issues/280
-    customCSS = ["css/style.tables.css"]
-    
-    # path to the favicon, under "static"
-    favicon = "favicon.ico"
-    
-    [params.logo]
-    url = "blog.png"
-    width = 50
-    height = 50
-    alt = "Logo"
 
 [markup]
   [markup.goldmark]
